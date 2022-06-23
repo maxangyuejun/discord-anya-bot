@@ -1,33 +1,40 @@
-from pydoc import cli
+from discord.ext import commands
 import discord
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
-client = discord.Client()
+bot = commands.Bot(command_prefix='!')
 token = os.getenv("TOKEN")
-# print(token)
 
-@client.event
+@bot.event
 async def on_ready():
-    print(f"{client.user} has connected to discord!")
-    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="Spy X Family"))
+    print(f"{bot.user} has connected to discord!")
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="Spy X Family"))
 
-@client.event
+@bot.command(name="testing")
+async def test(ctx, *args):
+    await ctx.send(" ".join(args))
+
+@bot.event
 async def on_message(msg):
-    if msg.author == client.user:
+    if msg.author == bot.user:
         return
 
     content = msg.content.lower()
 
-    if "hello" in content:
-        # await msg.add_reaction("<:elbobo:777884601615777803>")
+    if "hello" in content and content[0] != "!":
         await msg.channel.send("Hello!")
         
 
-    elif "ferrari" in content:
+    elif "ferrari" in content and content[0] != "!":
+        await msg.add_reaction("<:elbobo:777884601615777803>")
         await msg.channel.send("10-place grid penalty")
+
+    await bot.process_commands(msg)
         
 
-client.run(token)
+
+
+bot.run(token)
 
