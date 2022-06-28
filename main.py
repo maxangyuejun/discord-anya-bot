@@ -3,7 +3,6 @@ from discord.ext import commands
 import discord
 import os
 from dotenv import load_dotenv
-from roles import *
 
 load_dotenv()
 bot = commands.Bot(command_prefix='!')
@@ -18,6 +17,16 @@ async def on_ready():
 @bot.command(name="testing")
 async def test(ctx, *args):
     await ctx.send(" ".join(args))
+
+# Loads a cog file from cogs folder
+@bot.command()
+async def load(ctx, extension):
+    bot.load_extension(f"cogs.{extension}")
+
+# Unloads a cog file from cogs folder
+@bot.command()
+async def unload(ctx, extension):
+    bot.unload_extension(f"cogs.{extension}")
 
 
 
@@ -73,6 +82,8 @@ async def on_message(msg):
     if "hello" in content and content[0] != "!":
         await msg.channel.send("Hello!")
         
+    elif "wat" in content and content[0] != "!":
+        await msg.channel.send("WAT")
 
     elif "ferrari" in content and content[0] != "!":
         await msg.add_reaction("<:elbobo:777884601615777803>")
@@ -80,8 +91,10 @@ async def on_message(msg):
 
     await bot.process_commands(msg)
         
-
-
+# Loads all .py Cog files in cogs folder
+for filename in os.listdir("./cogs"):
+    if filename.endswith(".py"):
+        bot.load_extension(f"cogs.{filename[:-3]}")
 
 bot.run(token)
 
