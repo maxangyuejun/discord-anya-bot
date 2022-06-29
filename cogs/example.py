@@ -5,11 +5,12 @@ class Example(commands.Cog):
 
     def __init__(self, client):
         self.client = client
+        self.name = "Example cog"
 
     # Events
     @commands.Cog.listener()
     async def on_ready(self):
-        print("Bot is ready")
+        print(f"{self.name} is loaded")
 
     # Commands
     @commands.command()
